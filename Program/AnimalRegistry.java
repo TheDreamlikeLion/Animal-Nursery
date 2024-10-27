@@ -10,8 +10,11 @@ public class AnimalRegistry implements AutoCloseable {
 
     private List<Animal> animals = new ArrayList<>();
 
+    private static Counter counter = new Counter();
+
     public void addNewAnimal(Animal animal) {
         animals.add(animal);
+        counter.add();
     }
 
     public void teachCommand(Animal animal, String command) {
@@ -163,7 +166,29 @@ public class AnimalRegistry implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        throw new UnsupportedOperationException("UnsupportedOperationException 'close'");
+        if (counter.getCount() == 0) {
+            throw new Exception("Counter was not used in try-with-resources block");
+        } else {
+            counter.resetCount();
+        }
+    }
+
+}
+
+class Counter {
+
+    private int count;
+
+    public void add() {
+        count++;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void resetCount() {
+        count = 0;
     }
 
 }
